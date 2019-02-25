@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace Messenger
 {
@@ -6,7 +7,11 @@ namespace Messenger
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            StreamReader reader = new StreamReader("auth.txt");
+            //Load Settings
+            string accountSid;
+            string authToken;
+            
         }
     }
 }
