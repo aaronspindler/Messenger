@@ -11,6 +11,10 @@ namespace Messenger
     {
         static void Main(string[] args)
         {
+            //If true it will randomly select a number from your list of numbers
+            //Ignores messagePerNumber limit
+            bool fromRandomNumber = false;
+            
             //Change to set how long between sending messages
             //Good to prevent account being locked by spam control
             int interval = 2000;
@@ -48,19 +52,39 @@ namespace Messenger
 
             TwilioClient.Init(accountSid, authToken);
 
-            for (int i = 0; i < fromList.Count; i++)
+            if (fromRandomNumber)
             {
-                for (int j = 0; j < messagePerNumber; j++)
+                while (true)
                 {
+                    var randomNumGenerator = new Random();
+                    int randomNumber = randomNumGenerator.Next(0, fromList.Count);
+                    
                     var message = MessageResource.Create(
                         body: messageBody,
-                        from: new Twilio.Types.PhoneNumber(fromList[i]),
+                        from: new Twilio.Types.PhoneNumber(fromList[randomNumber]),
                         to: new Twilio.Types.PhoneNumber(toNumber)
-                        );
+                    );
                     Console.WriteLine(DateTime.Now + message.Sid);
                     Thread.Sleep(interval);
                 }
             }
+            else
+            {
+                for (int i = 0; i < fromList.Count; i++)
+                {
+                    for (int j = 0; j < messagePerNumber; j++)
+                    {
+                        var message = MessageResource.Create(
+                            body: messageBody,
+                            from: new Twilio.Types.PhoneNumber(fromList[i]),
+                            to: new Twilio.Types.PhoneNumber(toNumber)
+                        );
+                        Console.WriteLine(DateTime.Now + message.Sid);
+                        Thread.Sleep(interval);
+                    }
+                }
+            }
+
         }
     }
 }
